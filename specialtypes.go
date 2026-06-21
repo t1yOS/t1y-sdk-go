@@ -89,10 +89,10 @@ func MapArray(arr []map[string]any) string {
 
 // Null markers that the server converts to Go nil.
 const (
-	Null     = "Null"
-	None     = "None"
-	Nil      = "Nil"
-	Empty    = ""
+	Null      = "Null"
+	None      = "None"
+	Nil       = "Nil"
+	Empty     = ""
 	UNDEFINED = "UNDEFINED"
 	Undefined = "Undefined"
 )
@@ -103,24 +103,24 @@ const (
 // These are string values that, when sent to the server, are replaced
 // with the actual current time on the server side via Go's time.Now().
 const (
-	TimeNowMarker              = "time.Now()"
-	TimeNowUnixMarker          = "time.Now().Unix()"
-	TimeNowUnixNanoMarker      = "time.Now().UnixNano()"
-	TimeNowWeekdayMarker       = "time.Now().Weekday()"
+	TimeNowMarker               = "time.Now()"
+	TimeNowUnixMarker           = "time.Now().Unix()"
+	TimeNowUnixNanoMarker       = "time.Now().UnixNano()"
+	TimeNowWeekdayMarker        = "time.Now().Weekday()"
 	TimeNowWeekdayChineseMarker = "time.Now().Weekday().Chinese()"
 )
 
 // timeNow is a convenience struct grouping all time-now helpers.
 var TimeNow = struct {
-	Now              func() string
-	NowUnix          func() string
-	NowUnixNano      func() string
-	NowWeekday       func() string
+	Now               func() string
+	NowUnix           func() string
+	NowUnixNano       func() string
+	NowWeekday        func() string
 	NowWeekdayChinese func() string
 }{
-	Now:              func() string { return TimeNowMarker },
-	NowUnix:          func() string { return TimeNowUnixMarker },
-	NowUnixNano:      func() string { return TimeNowUnixNanoMarker },
-	NowWeekday:       func() string { return TimeNowWeekdayMarker },
+	Now:               func() string { return TimeNowMarker },
+	NowUnix:           func() string { return TimeNowUnixMarker },
+	NowUnixNano:       func() string { return TimeNowUnixNanoMarker },
+	NowWeekday:        func() string { return TimeNowWeekdayMarker },
 	NowWeekdayChinese: func() string { return TimeNowWeekdayChineseMarker },
 }
