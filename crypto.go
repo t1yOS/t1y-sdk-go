@@ -68,13 +68,13 @@ func EncryptAESGCM(data []byte, key []byte) (string, error) {
 // jsonPayload is a JSON string of { n, j, t } payload.
 // The key must be exactly 32 bytes.
 // Returns the decrypted plaintext.
-func DecryptAESGCM(jsonPayload string, key []byte) ([]byte, error) {
+func DecryptAESGCM(jsonPayload string, key []byte) (plaintext []byte, err error) {
 	if len(key) != 32 {
 		return nil, errors.New("key length must be 32 bytes")
 	}
 
 	var payload AESGCMPayload
-	if err := json.Unmarshal([]byte(jsonPayload), &payload); err != nil {
+	if err = json.Unmarshal([]byte(jsonPayload), &payload); err != nil {
 		return nil, fmt.Errorf("invalid json payload: %w", err)
 	}
 
@@ -113,7 +113,7 @@ func DecryptAESGCM(jsonPayload string, key []byte) ([]byte, error) {
 		}
 	}()
 
-	plaintext, err := gcm.Open(nil, nonce, sealed, nil)
+	plaintext, err = gcm.Open(nil, nonce, sealed, nil)
 	if err != nil {
 		return nil, fmt.Errorf("gcm open failed: %w", err)
 	}

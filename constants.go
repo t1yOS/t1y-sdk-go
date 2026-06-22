@@ -29,6 +29,17 @@ const DefaultSafeMode = false
 // Maximum time difference allowed for request timestamp (seconds).
 const MaxTimeDiff = 10
 
+// Valid Unix timestamp range for heuristic detection:
+//   - Seconds: 1,000,000,000 (2001-09-09) to 4,100,000,000 (2099-12-01)
+//   - Milliseconds: 1,000,000,000,000 (2001-09-09) to 4,100,000,000,000 (2099-12-01)
+// Numbers outside these ranges are NOT auto-converted to Timestamp markers.
+const (
+	MinTimestampSeconds      = 1_000_000_000
+	MaxTimestampSeconds      = 4_100_000_000
+	MinTimestampMilliseconds = 1_000_000_000_000
+	MaxTimestampMilliseconds = 4_100_000_000_000
+)
+
 // Request timeout (5 minutes).
 const RequestTimeout = 5 * time.Minute
 

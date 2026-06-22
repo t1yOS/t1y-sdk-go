@@ -141,20 +141,20 @@ func convertDateTypes(value any) any {
 
 	rv := reflect.ValueOf(value)
 
-	// Handle numbers: int >= 10 digits → Timestamp
+	// Handle numbers: int with >= 10 digits that falls within a valid
+	// Unix timestamp range (seconds or milliseconds) → Timestamp marker.
+	// This avoids misidentifying non-timestamp large integers (e.g. user IDs).
 	switch rv.Kind() {
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		v := rv.Int()
-		s := fmt.Sprintf("%d", v)
-		if len(s) >= 10 {
-			return fmt.Sprintf("Timestamp('%s')", s)
+		if isUnixTimestamp(v) {
+			return fmt.Sprintf("Timestamp('%d')", v)
 		}
 		return v
 	case reflect.Float64:
 		v := rv.Float()
-		s := fmt.Sprintf("%v", v)
-		if len(s) >= 10 {
-			return fmt.Sprintf("Timestamp('%s')", s)
+		if isUnixTimestampFloat(v) {
+			return fmt.Sprintf("Timestamp('%v')", v)
 		}
 		return v
 	}
@@ -332,4 +332,23 @@ func EnsureJscExtension(input string) string {
 	}
 
 	return path + query + hash
+}
+
+// ==================== Timestamp Heuristic ====================
+
+// isUnixTimestamp checks if an int64 value falls within a valid Unix timestamp
+// range (seconds: ~2001–2099, or milliseconds: ~2001–2099). This prevents
+// misidentifying large non-timestamp integers (e.g. user IDs, phone numbers)
+// as timestamps.
+func isUnixTimestamp(v int64) bool {
+	return (v >= MinTimestampSeconds && v <= MaxTimestampSeconds) ||
+		(v >= MinTimestampMilliseconds && v <= MaxTimestampMilliseconds)
+}
+
+// isUnixTimestampFloat checks if a float64 value falls within a valid Unix
+// timestamp range (seconds or milliseconds). Float timestamps may include a
+// fractional second component.
+func isUnixTimestampFloat(v float64) bool {
+	return (v >= float64(MinTimestampSeconds) && v <= float64(MaxTimestampSeconds)) ||
+		(v >= float64(MinTimestampMilliseconds) && v <= float64(MaxTimestampMilliseconds))
 }
